@@ -1,13 +1,29 @@
 ﻿@page "/"
 @inject IJSRuntime js
 
-<button class="btn btn-primary" @onclick="DownloadFile">Don't click here</button>
+<button class="btn btn-primary" @onclick=DownloadFile
+        @onmouseover=SetHoverMessage
+        @onfocusin=SetHoverMessage
+        @onmouseout=SetRegularMessage
+        @onfocusout=SetRegularMessage>
+    @ButtonContent
+</button>
 
 @code {
-    private void DownloadFile()
+    const string RegularMessage = "Click here";
+    const string HoverMessage = "⚠️ Don't click here";
+
+    string ButtonContent { get; set; } = RegularMessage;
+
+    void SetRegularMessage() => ButtonContent = RegularMessage;
+    void SetHoverMessage() => ButtonContent = HoverMessage;
+
+    void DownloadFile()
     {
         var text = "Hello, world!";
         var bytes = System.Text.Encoding.UTF8.GetBytes(text);
-        js.SaveAs("HelloWorld.txt", bytes);
+        js.SaveAs($"HelloWorld_{DateId()}.txt", bytes);
     }
+
+    private static string DateId() => DateTime.Now.ToString("yyyy'-'MM'-'dd'__'HH'_'mm'_'ss");
 }
